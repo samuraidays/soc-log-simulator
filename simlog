@@ -1,0 +1,64 @@
+#!/bin/sh
+# simlog — T-POT 攻撃ログ・シミュレータの簡易起動/停止ツール
+# 使い方: ./simlog {start|stop|status|test|dry|restart}
+#   start   : バックグラウンドで連続供給を開始
+#   stop    : 停止
+#   status  : 稼働状況を表示
+#   test    : HEC へ1件だけ送って疎通確認
+#   dry     : 送信せず標準出力にサンプルを表示
+#   restart : 停止して再開
+
+set -e
+DIR="$(cd "$(dirname "$0")" && pwd)"
+PIDFILE="$DIR/.simlog.pid"
+LOGFILE="$DIR/simlog.out"
+PY="$(command -v python3 || command -v python)"
+
+is_running() {
+  [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null
+}
+
+case "$1" in
+  start)
+    if is_running; then
+      echo "already running (pid $(cat "$PIDFILE"))"; exit 0
+    fi
+    shift
+    nohup "$PY" "$DIR/run.py" "$@" >>"$LOGFILE" 2>&1 &
+    echo $! > "$PIDFILE"
+    echo "started (pid $(cat "$PIDFILE")). logs: $LOGFILE"
+    ;;
+  stop)
+    if is_running; then
+      kill "$(cat "$PIDFILE")" && rm -f "$PIDFILE"
+      echo "stopped"
+    else
+      echo "not running"; rm -f "$PIDFILE"
+    fi
+    ;;
+  status)
+    if is_running; then
+      echo "running (pid $(cat "$PIDFILE"))"
+      tail -n 3 "$LOGFILE" 2>/dev/null || true
+    else
+      echo "stopped"
+    fi
+    ;;
+  test)
+    "$PY" "$DIR/run.py" --once
+    echo "1件送信しました。Splunk の index を確認してください。"
+    ;;
+  dry)
+    "$PY" "$DIR/run.py" --once --dry-run
+    ;;
+  restart)
+    "$0" stop || true
+    sleep 1
+    shift
+    "$0" start "$@"
+    ;;
+  *)
+    echo "usage: $0 {start|stop|status|test|dry|restart}"
+    exit 1
+    ;;
+esac

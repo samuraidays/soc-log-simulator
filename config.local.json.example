@@ -1,0 +1,9 @@
+{
+  "_comment": "このファイルを config.local.json にコピーし、実トークン等を入れる。config.local.json は .gitignore 済みでコミットされない。config.json の値をここで上書きできる（hecの一部だけでOK）。",
+  "hec": {
+    "url": "https://<SplunkのIP>:8088",
+    "token": "<発行した実HECトークン>",
+    "index": "tpot_sim",
+    "verify_tls": false
+  }
+}

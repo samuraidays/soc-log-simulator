@@ -1,0 +1,40 @@
+{
+  "_comment": "シミュレータ設定。会社のSplunkサーバではここだけ編集すればよい。token を発行したHECトークンに置き換える。",
+
+  "output": "hec",
+  "_output_note": "hec | file。HECが使えない場合は file（forwarder/monitorで取り込む）",
+
+  "hec": {
+    "url": "https://localhost:8088",
+    "token": "SET-IN-config.local.json-OR-ENV",
+    "_token_note": "★実トークンはここに書かない（コミット漏洩する）。config.local.json か 環境変数 SPLUNK_HEC_TOKEN に置く",
+    "index": "tpot_sim",
+    "host": "tpot-sim",
+    "batch_size": 50,
+    "timeout": 10,
+    "verify_tls": false
+  },
+
+  "file": {
+    "output_dir": "./out"
+  },
+
+  "eps": 5,
+  "_eps_note": "1秒あたりの平均イベント数。時間帯プロファイルで自動的に増減する",
+
+  "dst_ip": "10.0.0.10",
+  "_dst_ip_note": "攻撃先(社内検証ターゲット)として記録するIP",
+
+  "enabled_sources": ["cowrie", "dionaea", "suricata", "tanner"],
+
+  "sourcetype_map": {
+    "cowrie": "cowrie",
+    "dionaea": "dionaea",
+    "suricata:eve": "suricata:eve",
+    "tanner": "tanner"
+  },
+  "_sourcetype_note": "送信時のsourcetypeをSplunkのTA/アドオンに合わせて変更可。例: 'suricata:eve' を 'suricata' に。左キーは変更しない",
+
+  "malicious_benign_ratio": [1, 4],
+  "_ratio_note": "悪性:良性 の比率。良性(既知スキャナ)を多めにするとアラート疲れを再現でき、CTIフィルタの効果が際立つ"
+}

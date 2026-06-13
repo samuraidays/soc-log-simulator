@@ -1,0 +1,18 @@
+{
+  "_comment": "Suricata(IDS) EVE alert の実観測シグネチャ。by_signature（prefetch）由来。malicious=実攻撃寄り / benign=スキャナ/情報系。severity は ET の慣習（1=高,3=低）。",
+  "sensor": "tpot-sensor-01",
+  "malicious_signatures": [
+    {"signature": "ET SCAN JAWS Webserver Unauthenticated Shell Command Execution", "category": "Web Application Attack", "signature_id": 2023013, "severity": 1},
+    {"signature": "ET EXPLOIT Possible CVE-2020-11900 IP-in-IP tunnel Double-Free", "category": "Attempted Administrator Privilege Gain", "signature_id": 2030387, "severity": 1},
+    {"signature": "ET SCAN Mirai Variant User-Agent (Inbound)", "category": "A Network Trojan was detected", "signature_id": 2028349, "severity": 1},
+    {"signature": "ET EXPLOIT Possible CVE-2020-11910 anomalous ICMPv4 type 3,code 4 Path MTU Discovery", "category": "Attempted Administrator Privilege Gain", "signature_id": 2030391, "severity": 2}
+  ],
+  "benign_signatures": [
+    {"signature": "ET INFO SSH session in progress on Expected Port", "category": "Misc activity", "signature_id": 2001219, "severity": 3},
+    {"signature": "GPL ICMP Destination Unreachable Communication with Destination Host is Administratively Prohibited", "category": "Misc activity", "signature_id": 2100485, "severity": 3},
+    {"signature": "ET INFO Potentially unsafe SMBv1 protocol in use", "category": "Potential Corporate Privacy Violation", "signature_id": 2025975, "severity": 3},
+    {"signature": "ET SCAN Zmap User-Agent (Inbound)", "category": "Detection of a Network Scan", "signature_id": 2029054, "severity": 3},
+    {"signature": "ET INFO SSH session in progress on Unusual Port", "category": "Misc activity", "signature_id": 2001220, "severity": 3},
+    {"signature": "GPL SCAN loopback traffic", "category": "Attempted Information Leak", "signature_id": 2100528, "severity": 3}
+  ]
+}

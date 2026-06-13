@@ -1,0 +1,17 @@
+[Unit]
+Description=T-POT attack log simulator -> Splunk HEC
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# WorkingDirectory と ExecStart のパスを実際の配置に合わせて変更する
+WorkingDirectory=/opt/sim-honey-pot-log
+ExecStart=/usr/bin/python3 /opt/sim-honey-pot-log/run.py
+Restart=on-failure
+RestartSec=5
+# 任意: 実行ユーザを指定
+# User=splunk
+
+[Install]
+WantedBy=multi-user.target

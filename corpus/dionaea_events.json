@@ -1,0 +1,10 @@
+{
+  "_comment": "Dionaea(SMB/マルウェア捕獲)。SMBスキャン+検体ダウンロード。VT判定はCTI(GTI)に委ねるため vt_* は event に埋め込まない。",
+  "_hash_note": "downloads の md5 は GTI(VirusTotal)が実際に照会するため、ダミーでは『該当なし』になりデモが崩れる。day-one用に EICAR(全AV/GTIが必ず検知する標準テストファイル)を入れてある。本物の捕獲ハッシュ(VT確定済み)は tools/build_corpus.py が honeypot_enriched.json から取り込む。",
+  "sensor": "tpot-sensor-01",
+  "protocols": ["smbd", "mssqld", "httpd", "ftpd"],
+  "dst_ports": [445, 139, 1433, 135, 3306],
+  "downloads": [
+    {"md5": "44d88612fea8a8f36de82e1278abb02f", "url": "http://203.0.113.10/eicar.com", "filename": "eicar.com", "vt_family": "EICAR-Test-File", "_note": "EICAR標準テスト。GTI/全AVが必ず悪性判定。連携疎通の確認用。本番は build_corpus で実捕獲ハッシュに差し替え推奨"}
+  ]
+}

@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+
+# 実行時の一時ファイル
+.simlog.pid
+simlog.out
+out/
+
+# 機密・環境固有（コミット厳禁）
+*.local.json          # config.local.json（HECトークン等）。.example は追跡される
+.env
+
+# エディタ/ツールのローカル設定
+.claude/
+.vscode/
+.idea/
+.DS_Store
