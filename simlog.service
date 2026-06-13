@@ -1,17 +1,23 @@
 [Unit]
-Description=T-POT attack log simulator -> Splunk HEC
+Description=SOC attack log simulator -> Splunk HEC
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=simple
-# WorkingDirectory と ExecStart のパスを実際の配置に合わせて変更する
-WorkingDirectory=/opt/sim-honey-pot-log
-ExecStart=/usr/bin/python3 /opt/sim-honey-pot-log/run.py
+# 実行ユーザ。Splunkサーバに既にある splunk アカウントを使うのが手軽
+# （プロセスはHECへHTTP送信するだけなので任意のユーザでよい）
+User=splunk
+Group=splunk
+# リポジトリ一式を置いた場所
+WorkingDirectory=/opt/soc-log-simulator
+ExecStart=/usr/bin/python3 /opt/soc-log-simulator/run.py
 Restart=on-failure
 RestartSec=5
-# 任意: 実行ユーザを指定
-# User=splunk
+
+# HECトークンは WorkingDirectory 内の config.local.json から自動的に読まれる。
+# 環境変数で渡したい場合は、トークンを書いた専用ファイルを指定する（推奨 chmod 600）:
+# EnvironmentFile=/opt/soc-log-simulator/simulator.env   # 中身: SPLUNK_HEC_TOKEN=xxxxxxxx
 
 [Install]
 WantedBy=multi-user.target

@@ -126,6 +126,59 @@ index=tpot_sim sourcetype=suricata:eve | stats count by alert.signature
 CTI 連携後は、`src_ip` をレピュテーション lookup で突き合わせ、
 良性スキャナ(Censys/Shodan/ShadowServer)を除外するとアラートが減ることを体感できる。
 
+## 共有サーバでの運用（Splunkを触る全員が起動/停止）
+
+「誰でも起動/停止できる」ようにするなら、**`/opt` に置いて systemd サービス**にするのが定石。
+`./simlog start` 方式は手軽だが、起動した本人以外がプロセスを止められない（UIDが違うと `kill` 不可）
+という多人数の壁があるため、共有環境では systemd を推奨。
+
+### 1. 設置（一度だけ・管理者）
+```sh
+# /opt に配置（誰かのホームに置かない）
+sudo git clone https://github.com/samuraidays/soc-log-simulator.git /opt/soc-log-simulator
+cd /opt/soc-log-simulator
+sudo chmod +x simlog run.py tools/build_corpus.py
+
+# 実トークンを設定（このファイルは追跡されない。所有者と権限を絞る）
+sudo cp config.local.json.example config.local.json
+sudo vi config.local.json
+sudo chown splunk:splunk config.local.json && sudo chmod 640 config.local.json
+
+# サービス登録
+sudo cp simlog.service /etc/systemd/system/soc-log-simulator.service
+sudo systemctl daemon-reload
+sudo systemctl enable --now soc-log-simulator
+```
+
+### 2. 全員が操作できるようにする（sudoers で対象サービスだけ許可）
+個人アカウントのまま、このサービスの start/stop だけを許可する（root全権は渡さない）:
+```sh
+# 操作を許可するグループを用意（例: soc）し、Splunk担当者を追加
+sudo groupadd -f soc && sudo usermod -aG soc <ユーザー名>
+
+# /etc/sudoers.d/soc-log-simulator として保存（visudo推奨）
+%soc ALL=(root) NOPASSWD: /usr/bin/systemctl start soc-log-simulator, \
+  /usr/bin/systemctl stop soc-log-simulator, \
+  /usr/bin/systemctl restart soc-log-simulator, \
+  /usr/bin/systemctl status soc-log-simulator
+```
+
+### 3. 各自の操作（誰でも・どの順でも）
+```sh
+sudo systemctl start  soc-log-simulator   # 開始
+sudo systemctl stop   soc-log-simulator   # 停止
+sudo systemctl status soc-log-simulator   # 稼働確認
+journalctl -u soc-log-simulator -f        # ログ追尾（送信件数/エラー）
+```
+誰が起動しても誰でも停止でき、サーバ再起動後も自動起動、異常時は自動再起動（`Restart=on-failure`）。
+
+### 設定変更（EPS や悪性:良性比）
+`/opt/soc-log-simulator/config.json` を編集 → `sudo systemctl restart soc-log-simulator`。
+
+> **より簡単な代替**: 担当者が全員 `splunk` など**共有アカウントで作業**する運用なら、systemd を使わず
+> `/opt/soc-log-simulator` を `splunk` 所有にして `./simlog start|stop` でも回せる
+> （同一ユーザーなので停止権限の問題が出ない）。個人アカウント運用なら上の systemd 方式が安全。
+
 ## コーパスの更新（環境A = T-POT/Wazuh にアクセスできる側）
 
 > 手順の詳細・確認方法・更新頻度の目安は **[docs/CORPUS_UPDATE.md](docs/CORPUS_UPDATE.md)** にまとめてあります。
