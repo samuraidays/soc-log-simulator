@@ -1,42 +1,365 @@
 {
-  "_comment": "T-POT/Wazuh で実観測した悪性IOC。abuse_score/分類などのエンリッチ値はあえて含めない（CTI製品が後段で付与する部分）。kind が攻撃種別→生成元ハニーポットを決める。tools/build_corpus.py で更新可能。",
+  "_comment": "build_corpus.py により再生成",
   "ips": [
-    {"ip": "45.148.10.183", "country": "NL", "isp": "TECHOFF SRV LIMITED", "kind": "ssh-bruteforce", "campaign": "techoff-srv"},
-    {"ip": "45.148.10.240", "country": "NL", "isp": "TECHOFF SRV LIMITED", "kind": "ssh-bruteforce", "campaign": "techoff-srv"},
-    {"ip": "2.57.122.177", "country": "RO", "isp": "TECHOFF SRV LIMITED", "kind": "ssh-bruteforce", "campaign": "techoff-srv"},
-    {"ip": "195.178.110.30", "country": "NL", "isp": "TECHOFF SRV LIMITED", "kind": "ssh-bruteforce", "campaign": "techoff-srv"},
-    {"ip": "196.188.116.56", "country": "ET", "isp": "Ethio Telecom", "kind": "ssh-bruteforce"},
-    {"ip": "87.251.64.176", "country": "PL", "isp": "ISAEV Igor", "kind": "ssh-bruteforce"},
-    {"ip": "172.81.62.90", "country": "US", "isp": "Dynu Systems Incorporated", "kind": "ssh-bruteforce"},
-    {"ip": "186.96.145.241", "country": "MX", "isp": "TOTAL PLAY TELECOMUNICACIONES SA DE CV", "kind": "ssh-bruteforce"},
-    {"ip": "192.109.200.78", "country": "DE", "isp": "Telco power Ltd", "kind": "ssh-bruteforce"},
-    {"ip": "45.153.34.112", "country": "NL", "isp": "VMHeaven.io", "kind": "ssh-bruteforce"},
-    {"ip": "45.156.87.13", "country": "NL", "isp": "VMHeaven.io", "kind": "ssh-bruteforce"},
-    {"ip": "46.62.225.25", "country": "FI", "isp": "Hetzner Online GmbH", "kind": "ssh-bruteforce"},
-    {"ip": "114.33.12.13", "country": "TW", "isp": "Chunghwa Telecom", "kind": "ssh-bruteforce"},
-    {"ip": "134.209.74.135", "country": "US", "isp": "DigitalOcean, LLC", "kind": "ssh-bruteforce"},
-    {"ip": "103.54.101.248", "country": "IN", "isp": "Digitax India Communications Pvt Ltd.", "kind": "ssh-bruteforce"},
-    {"ip": "103.149.170.59", "country": "VN", "isp": "MCT Technology Solution Joint Stock Company", "kind": "ssh-bruteforce"},
-    {"ip": "142.93.58.79", "country": "US", "isp": "DigitalOcean, LLC", "kind": "ssh-bruteforce"},
-    {"ip": "83.168.110.83", "country": "PL", "isp": "Virtual Private Server", "kind": "ssh-bruteforce"},
-    {"ip": "47.83.132.93", "country": "HK", "isp": "Alibaba Cloud LLC", "kind": "ssh-bruteforce"},
-    {"ip": "204.48.25.231", "country": "US", "isp": "DigitalOcean, LLC", "kind": "ssh-bruteforce"},
-    {"ip": "2.57.121.25", "country": "RO", "isp": "UNMANAGED LTD", "kind": "ssh-bruteforce"},
-    {"ip": "213.209.159.56", "country": "DE", "isp": "Feo Prest SRL", "kind": "ssh-bruteforce"},
-    {"ip": "2.57.121.112", "country": "RO", "isp": "UNMANAGED LTD", "kind": "ssh-bruteforce"},
-    {"ip": "167.88.186.94", "country": "JP", "isp": "2EZ Network Inc.", "kind": "ssh-bruteforce"},
-
-    {"ip": "195.175.30.58", "country": "TR", "isp": "Turk Telekom RAS Test Network", "kind": "smb-scan"},
-    {"ip": "203.99.190.252", "country": "PK", "isp": "Pakistan Telecommunication Company Limited", "kind": "smb-scan"},
-    {"ip": "183.203.184.101", "country": "CN", "isp": "China Mobile Communications Corporation", "kind": "smb-scan"},
-    {"ip": "110.78.165.105", "country": "TH", "isp": "CAT TELECOM", "kind": "smb-scan"},
-    {"ip": "220.132.88.169", "country": "TW", "isp": "Chunghwa Telecom", "kind": "smb-scan"},
-    {"ip": "46.60.15.34", "country": "PS", "isp": "AL Zaytona Company For Communication Ltd.", "kind": "smb-scan"},
-    {"ip": "189.248.185.174", "country": "MX", "isp": "Uninet S.A. de C.V.", "kind": "smb-scan"},
-    {"ip": "213.209.159.154", "country": "DE", "isp": "Feo Prest SRL", "kind": "smb-scan"},
-    {"ip": "122.52.203.208", "country": "PH", "isp": "IPG", "kind": "smb-scan"},
-    {"ip": "117.236.191.233", "country": "IN", "isp": "NIB (National Internet Backbone)", "kind": "smb-scan"},
-    {"ip": "172.235.173.150", "country": "NL", "isp": "Linode", "kind": "smb-scan"},
-    {"ip": "36.62.32.66", "country": "CN", "isp": "CHINANET Anhui province network", "kind": "smb-scan"}
+    {
+      "ip": "176.65.139.181",
+      "country": "NL",
+      "isp": "Storm Industries LLC",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "45.148.10.240",
+      "country": "NL",
+      "isp": "TECHOFF SRV LIMITED",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "45.199.177.34",
+      "country": "PH",
+      "isp": "Philippine Telegraph and Telephone Corporation",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "45.198.224.46",
+      "country": "NL",
+      "isp": "VPSVAULT.HOST LTD",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "43.167.232.38",
+      "country": "JP",
+      "isp": "ACEVILLE PTE.LTD.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "92.118.39.62",
+      "country": "RO",
+      "isp": "DMZHOST",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "87.251.64.146",
+      "country": "PL",
+      "isp": "ISAEV Igor",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "77.83.39.197",
+      "country": "NL",
+      "isp": "Pitline Ltd",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "89.34.96.151",
+      "country": "GB",
+      "isp": "Hydra Communications Ltd",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "195.178.110.30",
+      "country": "NL",
+      "isp": "TECHOFF SRV LIMITED",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "15.204.172.25",
+      "country": "US",
+      "isp": "OVH US LLC",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "103.249.87.183",
+      "country": "MY",
+      "isp": "Hosting Services",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "170.106.167.214",
+      "country": "US",
+      "isp": "Tencent Building, Kejizhongyi Avenue",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "141.98.83.240",
+      "country": "RO",
+      "isp": "Flyservers S.A.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "45.156.87.127",
+      "country": "NL",
+      "isp": "TechTies Inc.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "183.134.217.20",
+      "country": "CN",
+      "isp": "CHINANET-ZJ Hangzhou node network",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "176.65.139.66",
+      "country": "NL",
+      "isp": "Storm Industries LLC",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "139.199.80.137",
+      "country": "CN",
+      "isp": "Tencent cloud computing (Beijing) Co., Ltd.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "43.131.45.213",
+      "country": "DE",
+      "isp": "Asia Pacific Network Information Center, Pty. Ltd.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "223.83.114.88",
+      "country": "CN",
+      "isp": "China Mobile Communications Corporation",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "43.164.192.40",
+      "country": "BR",
+      "isp": "ACEVILLE PTE.LTD.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "20.80.88.167",
+      "country": "US",
+      "isp": "Microsoft Corporation",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "36.37.161.191",
+      "country": "KH",
+      "isp": "VIETTEL (CAMBODIA) PTE., LTD.",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "193.46.255.86",
+      "country": "RO",
+      "isp": "UNMANAGED LTD",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "103.90.211.130",
+      "country": "IN",
+      "isp": "Willaegis Online Private Limited",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "43.130.72.40",
+      "country": "US",
+      "isp": "Asia Pacific Network Information Center, Pty. Ltd.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "20.64.106.28",
+      "country": "US",
+      "isp": "Microsoft Corporation",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "36.255.68.137",
+      "country": "BD",
+      "isp": "InterCloud ltd",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "150.109.230.210",
+      "country": "KR",
+      "isp": "Tencent Building, Kejizhongyi Avenue",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "185.38.149.130",
+      "country": "GB",
+      "isp": "Hydra Communications Ltd",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "176.65.139.99",
+      "country": "NL",
+      "isp": "Storm Industries LLC",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "16.58.56.214",
+      "country": "US",
+      "isp": "Amazon.com, Inc.",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "43.152.72.244",
+      "country": "US",
+      "isp": "Asia Pacific Network Information Center, Pty. Ltd.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "43.156.125.227",
+      "country": "SG",
+      "isp": "Asia Pacific Network Information Center, Pty. Ltd.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "45.198.224.5",
+      "country": "NL",
+      "isp": "VPSVAULT.HOST LTD",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "2.57.121.25",
+      "country": "RO",
+      "isp": "UNMANAGED LTD",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "34.65.251.190",
+      "country": "CH",
+      "isp": "Google LLC",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "20.163.74.20",
+      "country": "US",
+      "isp": "Microsoft Corporation",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "2.57.121.112",
+      "country": "RO",
+      "isp": "UNMANAGED LTD",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "202.59.76.150",
+      "country": "PK",
+      "isp": "NEXLINX NETWORKS (PVT) LIMITED",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "43.164.196.47",
+      "country": "BR",
+      "isp": "ACEVILLE PTE.LTD.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "9.234.8.52",
+      "country": "US",
+      "isp": "Microsoft Limited",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "43.165.195.234",
+      "country": "ID",
+      "isp": "ACEVILLE PTE.LTD.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "97.74.81.27",
+      "country": "SG",
+      "isp": "GoDaddy.com, LLC",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "43.130.141.193",
+      "country": "US",
+      "isp": "Asia Pacific Network Information Center, Pty. Ltd.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "103.163.100.111",
+      "country": "IN",
+      "isp": "Entire Cable And Broadband Opc Private Limited",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "122.52.57.141",
+      "country": "PH",
+      "isp": "IPG",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "43.160.241.129",
+      "country": "SG",
+      "isp": "ACEVILLE PTE.LTD.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "124.43.69.175",
+      "country": "LK",
+      "isp": "Internet Service Provider in Sri Lanka.",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "47.109.91.215",
+      "country": "CN",
+      "isp": "Aliyun Computing Co., LTD",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "72.90.84.62",
+      "country": "US",
+      "isp": "TURN KEY TECHNOLOGIES",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "115.227.26.85",
+      "country": "CN",
+      "isp": "CHINANET Zhejiang province network",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "43.130.110.130",
+      "country": "US",
+      "isp": "Asia Pacific Network Information Center, Pty. Ltd.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "101.96.234.229",
+      "country": "CN",
+      "isp": "Beijing Volcano Engine Technology Co., Ltd.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "101.2.162.242",
+      "country": "BD",
+      "isp": "Chittagong Online Limited.",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "103.27.109.179",
+      "country": "HK",
+      "isp": "Wah Tat Industrial Centre,Block C, 8-10 Wah Sing Road,Kwai Chung,Kowloon,HK",
+      "kind": "smb-scan"
+    },
+    {
+      "ip": "43.164.3.23",
+      "country": "TH",
+      "isp": "ACEVILLE PTE.LTD.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "61.178.209.47",
+      "country": "CN",
+      "isp": "CHINANET Gansu province network",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "43.130.53.252",
+      "country": "US",
+      "isp": "Asia Pacific Network Information Center, Pty. Ltd.",
+      "kind": "ssh-bruteforce"
+    },
+    {
+      "ip": "195.96.139.124",
+      "country": "GB",
+      "isp": "Driftnet Ltd",
+      "kind": "smb-scan"
+    }
   ]
 }

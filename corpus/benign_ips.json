@@ -1,21 +1,185 @@
 {
-  "_comment": "既知の良性スキャナ（研究機関・検索エンジン）。これらは攻撃ではないが honeypot/IDS には大量に当たるため、生ログだけ見ると悪性と区別がつかない=アラート疲れの主因。Censys/Shodan/ShadowServer/Google等は GreyNoise の RIOT/benign で既知良性として分類されるため、GreyNoise連携で実際に除外できる=使えるノイズデータ。より自分のT-POT由来にしたい場合は build_corpus.py(gn_classification=benign)で差し替え。report_iocs.sh の EXCLUDE_ISPS と同方針。",
+  "_comment": "build_corpus.py により再生成（GreyNoise=benign）",
   "ips": [
-    {"ip": "167.94.138.34", "country": "US", "isp": "Censys, Inc.", "kind": "scanner"},
-    {"ip": "167.94.145.99", "country": "US", "isp": "Censys, Inc.", "kind": "scanner"},
-    {"ip": "162.142.125.12", "country": "US", "isp": "Censys, Inc.", "kind": "scanner"},
-    {"ip": "198.20.69.74", "country": "US", "isp": "Shodan", "kind": "scanner"},
-    {"ip": "71.6.135.131", "country": "US", "isp": "Shodan", "kind": "scanner"},
-    {"ip": "85.247.137.6", "country": "US", "isp": "Shodan", "kind": "scanner"},
-    {"ip": "184.105.139.67", "country": "US", "isp": "ShadowServer Foundation", "kind": "scanner"},
-    {"ip": "184.105.247.196", "country": "US", "isp": "ShadowServer Foundation", "kind": "scanner"},
-    {"ip": "74.82.47.2", "country": "US", "isp": "ShadowServer Foundation", "kind": "scanner"},
-    {"ip": "206.168.34.79", "country": "US", "isp": "Internet Measurement (driftnet)", "kind": "scanner"},
-    {"ip": "199.45.154.86", "country": "US", "isp": "Academy for Internet Research", "kind": "scanner"},
-    {"ip": "193.163.125.10", "country": "DE", "isp": "Internet Measurement (Univ. Research)", "kind": "scanner"},
-    {"ip": "66.249.66.1", "country": "US", "isp": "Google LLC", "kind": "crawler"},
-    {"ip": "66.249.66.135", "country": "US", "isp": "Google LLC", "kind": "crawler"},
-    {"ip": "40.77.167.10", "country": "US", "isp": "Microsoft (Bingbot)", "kind": "crawler"},
-    {"ip": "47.128.13.10", "country": "US", "isp": "Amazon (Internet-wide survey)", "kind": "scanner"}
+    {
+      "ip": "64.62.197.127",
+      "country": "US",
+      "isp": "The Shadowserver Foundation, Inc.",
+      "kind": "scanner"
+    },
+    {
+      "ip": "64.62.197.212",
+      "country": "US",
+      "isp": "The Shadowserver Foundation, Inc.",
+      "kind": "scanner"
+    },
+    {
+      "ip": "66.132.172.212",
+      "country": "US",
+      "isp": "Censys, Inc.",
+      "kind": "scanner"
+    },
+    {
+      "ip": "147.185.132.76",
+      "country": "US",
+      "isp": "Palo Alto Networks, Inc",
+      "kind": "scanner"
+    },
+    {
+      "ip": "66.132.172.102",
+      "country": "US",
+      "isp": "Censys, Inc.",
+      "kind": "scanner"
+    },
+    {
+      "ip": "198.235.24.182",
+      "country": "BE",
+      "isp": "Palo Alto Networks, Inc",
+      "kind": "scanner"
+    },
+    {
+      "ip": "91.196.152.233",
+      "country": "FR",
+      "isp": "FR ONYPHE",
+      "kind": "scanner"
+    },
+    {
+      "ip": "91.196.152.236",
+      "country": "FR",
+      "isp": "FR ONYPHE",
+      "kind": "scanner"
+    },
+    {
+      "ip": "184.105.247.195",
+      "country": "US",
+      "isp": "The Shadowserver Foundation, Inc.",
+      "kind": "scanner"
+    },
+    {
+      "ip": "147.185.132.249",
+      "country": "US",
+      "isp": "Palo Alto Networks, Inc",
+      "kind": "scanner"
+    },
+    {
+      "ip": "198.235.24.205",
+      "country": "BE",
+      "isp": "Palo Alto Networks, Inc",
+      "kind": "scanner"
+    },
+    {
+      "ip": "65.49.1.152",
+      "country": "US",
+      "isp": "The Shadowserver Foundation, Inc.",
+      "kind": "scanner"
+    },
+    {
+      "ip": "66.132.195.51",
+      "country": "US",
+      "isp": "Censys, Inc.",
+      "kind": "scanner"
+    },
+    {
+      "ip": "66.132.224.91",
+      "country": "US",
+      "isp": "Censys, Inc.",
+      "kind": "scanner"
+    },
+    {
+      "ip": "172.104.11.34",
+      "country": "US",
+      "isp": "Linode",
+      "kind": "scanner"
+    },
+    {
+      "ip": "198.235.24.123",
+      "country": "TW",
+      "isp": "Palo Alto Networks, Inc",
+      "kind": "scanner"
+    },
+    {
+      "ip": "87.236.176.207",
+      "country": "GB",
+      "isp": "Driftnet Ltd",
+      "kind": "scanner"
+    },
+    {
+      "ip": "64.62.197.92",
+      "country": "US",
+      "isp": "The Shadowserver Foundation, Inc.",
+      "kind": "scanner"
+    },
+    {
+      "ip": "147.185.132.180",
+      "country": "US",
+      "isp": "Palo Alto Networks, Inc",
+      "kind": "scanner"
+    },
+    {
+      "ip": "69.5.169.177",
+      "country": "DE",
+      "isp": "Infrawatch Limited",
+      "kind": "scanner"
+    },
+    {
+      "ip": "31.14.254.58",
+      "country": "GB",
+      "isp": "Infrawatch Limited",
+      "kind": "scanner"
+    },
+    {
+      "ip": "213.166.84.46",
+      "country": "GB",
+      "isp": "Infrawatch Limited",
+      "kind": "scanner"
+    },
+    {
+      "ip": "5.226.140.20",
+      "country": "GB",
+      "isp": "Infrawatch Limited",
+      "kind": "scanner"
+    },
+    {
+      "ip": "188.240.59.28",
+      "country": "GB",
+      "isp": "Infrawatch Limited",
+      "kind": "scanner"
+    },
+    {
+      "ip": "217.146.80.101",
+      "country": "GB",
+      "isp": "Infrawatch Limited",
+      "kind": "scanner"
+    },
+    {
+      "ip": "205.210.31.13",
+      "country": "US",
+      "isp": "Palo Alto Networks, Inc",
+      "kind": "scanner"
+    },
+    {
+      "ip": "69.5.169.141",
+      "country": "DE",
+      "isp": "Infrawatch Limited",
+      "kind": "scanner"
+    },
+    {
+      "ip": "31.14.254.27",
+      "country": "GB",
+      "isp": "Infrawatch Limited",
+      "kind": "scanner"
+    },
+    {
+      "ip": "69.5.169.250",
+      "country": "DE",
+      "isp": "Infrawatch Limited",
+      "kind": "scanner"
+    },
+    {
+      "ip": "195.206.182.201",
+      "country": "GB",
+      "isp": "Infrawatch Limited",
+      "kind": "scanner"
+    }
   ]
 }
