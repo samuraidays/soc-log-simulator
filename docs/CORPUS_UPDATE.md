@@ -37,10 +37,23 @@ T-POT VPS (ssh tpot, port 64295)                         Wazuhサーバ (ssh waz
   `docker compose exec` で直接読みます。ホスト直下に `/logs` は無いためコンテナ経由です。
 - `honeypot_enriched.json`（唯一のエンリッチ済みソース）は、次の**実データ**取得にだけ使います:
   - **良性/悪性のIP仕分け**（GreyNoise `gn_classification`）→ `benign_ips.json` / `malicious_ips.json`
-  - **VT(GTI)確定済みの実マルウェアハッシュ**（`vt_malicious>0` のmd5 + `vt_family`）→ `dionaea_events.json`
+  - **VT(GTI)確定済みの実マルウェアハッシュ**（`vt_malicious>0` のmd5 + `vt_family`）→ `malware_iocs.json`
   - これにより **GTI はハッシュ照会で実際に悪性判定でき、GreyNoise は良性スキャナを実際に除外できる**。
 - 区別: dionaea の **md5 自体は生ログのデータ**（捕獲時にdionaeaが算出）なのでイベントに出力する。
   一方 **VT判定(vt_family/vt_malicious)はエンリッチなのでイベントには出さない**（GTIが付ける部分）。
+
+### マルウェアIOC(sha256/URL/domain)は脅威フィード併用（ハイブリッド）
+GTI 照会で確実に光らせたい sha256/URL/ドメインは、`tools/import_iocs.py` で abuse.ch
+(ThreatFox/MalwareBazaar) の本物IOCを `corpus/malware_iocs.json` に**マージ取込**する。
+`build_corpus.py`（T-POT由来）と `import_iocs.py`（フィード由来）は互いに上書きせず共存する。
+
+```sh
+python3 tools/import_iocs.py --source both --limit 40        # 要 abuse.ch Auth-Key（無料: https://auth.abuse.ch/）
+python3 tools/import_iocs.py --from-file threatfox_dump.json # キーが無ければ手動DLのJSONから
+```
+> なぜ併用か: cowrie の `shasum` 等は本物だが「authorized_keys保存」などGTI未収録が多く不発になりやすい。
+> abuse.ch は GTI が取り込む元ソースなのでヒットがほぼ確実。**ダミーは入れない**。
+> Auth-Key は `config.local.json` の `feeds.abusech_auth_key` か環境変数 `ABUSECH_AUTH_KEY` に置く。
 
 ### いつやるか（更新の頻度）
 鮮度が要るのは実質 **IOC（攻撃元IPの評判）だけ**です。目安はこれで十分:
@@ -130,22 +143,23 @@ python3 run.py --once --dry-run
 
 ## 4. 会社のSplunkサーバ（環境B）へ反映する
 
-更新した `corpus/` を環境Bへコピーするだけです。
+更新した `corpus/` を環境Bへ反映します。**git運用なら commit→push→pull が手軽**:
 
 ```sh
-# 例: rsync で corpus/ だけ同期
-rsync -av corpus/ <会社サーバ>:/opt/sim-honey-pot-log/corpus/
+# 環境A: コミットして push
+git add -A && git commit -m "refresh corpus/iocs" && git push
 
-# または scp
-scp corpus/*.json <会社サーバ>:/opt/sim-honey-pot-log/corpus/
+# 環境B（会社Splunkサーバ）: 取得して再起動
+sudo git pull && sudo systemctl restart soc-log-simulator
+#   systemd を使っていなければ: git pull && ./simlog restart
 ```
 
-反映後、環境Bでシミュレータを再起動すれば新しい種で生成が始まります:
+git を使わない場合は rsync/scp でも可:
 ```sh
-./simlog restart
+rsync -av corpus/ <会社サーバ>:/opt/soc-log-simulator/corpus/
 ```
 
-> 稼働中でなければ反映時の再起動は不要。次回 `./simlog start` から新コーパスが使われます。
+> 稼働中でなければ再起動は不要。次回起動から新コーパスが使われます。
 
 ---
 
@@ -177,13 +191,14 @@ Splunk 側で、更新で入った新しい `src_ip` が出ていれば反映完
 
 ```sh
 # 環境A（T-POT VPS に ssh tpot できる側）で:
-python3 tools/build_corpus.py --ssh-host tpot --dry-run    # 1. 差分確認
-python3 tools/build_corpus.py --ssh-host tpot             # 2. 本更新
-rsync -av corpus/ <会社サーバ>:/opt/sim-honey-pot-log/corpus/  # 3. 環境Bへ反映
+python3 tools/build_corpus.py --ssh-host tpot --dry-run     # 1. 差分確認
+python3 tools/build_corpus.py --ssh-host tpot              # 2. 本更新（T-POTコンテキスト）
+python3 tools/import_iocs.py --source both --limit 40      # 3. フィードから実IOC(sha256/URL/domain)
+git add -A && git commit -m "refresh corpus/iocs" && git push   # 4. 反映（git運用）
 
 # 環境B（会社Splunkサーバ）で:
-./simlog restart    # 4. 再起動して新コーパス反映
-./simlog dry        # 5. 確認
+sudo git pull && sudo systemctl restart soc-log-simulator  # 5. 取得して再起動
+#   （systemdでなければ git pull 後 ./simlog restart）
 ```
 
 頻度は **四半期に1回＋大事なデモの前** で十分です。
