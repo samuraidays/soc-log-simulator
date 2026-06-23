@@ -246,15 +246,22 @@ def build(args) -> dict:
             out["benign_ips.json"] = {"_comment": "build_corpus.py により再生成（GreyNoise=benign）",
                                       "ips": list(ben_ips.values())[:30]}
 
-    # --- malware_iocs.json を集約（EICARテスト行は残す） ---
+    # --- malware_iocs.json にマージ（フィード(import_iocs)由来やEICARを保持） ---
     if file_iocs or url_iocs:
-        existing = json.loads((CORPUS / "malware_iocs.json").read_text())
-        eicar = [i for i in existing.get("iocs", []) if i.get("vt_family") == "EICAR-Test-File"]
-        merged = list(file_iocs.values())[:30] + list(url_iocs.values())[:30] + eicar
-        out["malware_iocs.json"] = {
-            "_comment": "build_corpus.py により再生成（実観測のマルウェアIOC）",
-            "iocs": merged,
-        }
+        doc = json.loads((CORPUS / "malware_iocs.json").read_text())
+        existing = doc.get("iocs", [])
+
+        def _k(i: dict) -> str:
+            return i.get("sha256") or i.get("md5") or i.get("url") or i.get("domain") or ""
+
+        seen = {_k(i) for i in existing if _k(i)}
+        for i in list(file_iocs.values())[:30] + list(url_iocs.values())[:30]:
+            k = _k(i)
+            if k and k not in seen:
+                seen.add(k)
+                existing.append({kk: vv for kk, vv in i.items() if vv})
+        doc["iocs"] = existing
+        out["malware_iocs.json"] = doc
 
     out.pop("_cowrie_ips", None)
     return out

@@ -5,5 +5,9 @@
     "token": "<発行した実HECトークン>",
     "index": "tpot_sim",
     "verify_tls": false
+  },
+  "feeds": {
+    "_note": "tools/import_iocs.py が脅威フィード(abuse.ch)から実IOCを取得する際のAuth-Key。無料: https://auth.abuse.ch/",
+    "abusech_auth_key": "<abuse.ch の Auth-Key>"
   }
 }

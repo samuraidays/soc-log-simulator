@@ -203,14 +203,33 @@ python3 tools/build_corpus.py --src-dir /path/to/logs
 - **tanner**: `peer.ip`, `path`(.env/.aws等), `method`, `headers.user-agent`
 - **cowrie**(一部): `input` に本物のマルウェアURLを使った `wget` コマンド（URL/ドメインIOC）
 
-### 本物のマルウェアIOC（sha256 / ドメイン / URL）を入れる
+### 本物のマルウェアIOC（sha256 / ドメイン / URL）を GTI でエンリッチする
 GTI(VirusTotal)が照会して悪性判定する**実IOC**を `corpus/malware_iocs.json` に置く。
 dionaea(検体DL)と cowrie(wget) がここから引いて出力する。day-one は EICAR(実ハッシュ/全AV必中)入り。
-本物のデータの入れ方は2通り:
-1. **自分のT-POTから**: `python3 tools/build_corpus.py --ssh-host tpot`
-   → `honeypot_enriched.json` のVT確定検体(md5/sha256/url/family)と、cowrieの `wget` URL/ドメインを自動取込。
-2. **信頼できる公開フィードから**: abuse.ch **MalwareBazaar**(sha256+family) / **URLhaus**(URL+domain) や
-   自社GTIの検索結果を `corpus/malware_iocs.json` の `iocs` に貼る。**ダミーは入れない**（GTIで該当なしになる）。
+
+**ハイブリッド方式（推奨）**: 攻撃の外側(IP/コマンド/キャンペーン)はT-POT実データ、
+埋め込むペイロードIOC(sha256/URL/domain)はGTI確実ヒットの脅威フィードから供給する。
+2つのツールが `malware_iocs.json` に**マージ**で書き込む（互いに上書きしない・重複排除）:
+
+```sh
+# ① 脅威フィードから GTI確実ヒットの実IOC（sha256/URL/domain）を取得
+#    abuse.ch の無料Auth-Key が必要（https://auth.abuse.ch/）。config.local.json の feeds か環境変数で渡す
+python3 tools/import_iocs.py --source both --limit 40
+#    キーがまだ無ければ、手動DLしたJSONからでも取り込める（キー不要）
+python3 tools/import_iocs.py --from-file threatfox_dump.json
+
+# ② 自分のT-POTの実観測（VT確定検体md5、cowrieのwget URL 等）も取り込む
+python3 tools/build_corpus.py --ssh-host tpot
+```
+
+> **なぜフィード併用か**: cowrieの `shasum` 等は本物だが「authorized_keys保存」など**GTI未収録**が多く、
+> エンリッチが不発になりやすい。abuse.ch(MalwareBazaar=sha256+family / URLhaus・ThreatFox=URL+domain)は
+> **GTIが取り込む元ソース**なので、Splunkでのエンリッチがほぼ確実に当たる。**ダミーは入れない**。
+
+#### Splunk 側の GTI エンリッチ
+GTI/VirusTotal の Splunk アプリ（または GTI連携）で、生成ログの `sha256_hash` / `download.url` /
+ドメイン等のフィールドを照会 → 悪性判定・マルウェアファミリ・関連ドメインを付与。
+生ログ単体では意味不明（ペインA）→ GTIエンリッチで意味が付く、という流れを体感できる。
 
 `abuse_score` や `gn_classification` 等のエンリッチ値は**あえて含めない**（CTI 製品が付与する部分）。
 
