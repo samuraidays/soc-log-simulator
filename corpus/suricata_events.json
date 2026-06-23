@@ -11,33 +11,27 @@
   ],
   "benign_signatures": [
     {
-      "signature": "SURICATA IPv4 truncated packet",
-      "category": "Generic Protocol Command Decode",
-      "signature_id": 2200003,
-      "severity": 3
-    },
-    {
       "signature": "SURICATA AF-PACKET truncated packet",
       "category": "Generic Protocol Command Decode",
       "signature_id": 2200122,
       "severity": 3
     },
     {
-      "signature": "ET INFO SSH session in progress on Expected Port",
-      "category": "Misc activity",
-      "signature_id": 2001978,
-      "severity": 3
-    },
-    {
-      "signature": "SURICATA STREAM reassembly sequence GAP -- missing packet(s)",
+      "signature": "SURICATA IPv4 truncated packet",
       "category": "Generic Protocol Command Decode",
-      "signature_id": 2210048,
+      "signature_id": 2200003,
       "severity": 3
     },
     {
       "signature": "GPL MISC UPnP service discover attempt",
       "category": "Detection of a Network Scan",
       "signature_id": 2101917,
+      "severity": 3
+    },
+    {
+      "signature": "ET INFO SSH session in progress on Expected Port",
+      "category": "Misc activity",
+      "signature_id": 2001978,
       "severity": 3
     },
     {
@@ -50,6 +44,12 @@
       "signature": "SURICATA STREAM spurious retransmission",
       "category": "Generic Protocol Command Decode",
       "signature_id": 2210061,
+      "severity": 3
+    },
+    {
+      "signature": "SURICATA STREAM reassembly sequence GAP -- missing packet(s)",
+      "category": "Generic Protocol Command Decode",
+      "signature_id": 2210048,
       "severity": 3
     },
     {
@@ -92,6 +92,18 @@
       "signature": "SURICATA IPv6 truncated packet",
       "category": "Generic Protocol Command Decode",
       "signature_id": 2200013,
+      "severity": 3
+    },
+    {
+      "signature": "SURICATA Applayer Wrong direction first Data",
+      "category": "Generic Protocol Command Decode",
+      "signature_id": 2260001,
+      "severity": 3
+    },
+    {
+      "signature": "SURICATA SSH invalid banner",
+      "category": "Generic Protocol Command Decode",
+      "signature_id": 2228000,
       "severity": 3
     }
   ]

@@ -5,12 +5,12 @@
     {
       "method": "GET",
       "path": "/",
-      "user_agent": "l9tcpid/v1.1.0"
+      "user_agent": "Mozilla/5.0 (compatible; GenomeCrawlerd/1.0; +https://www.nokia.com/genomecrawler)"
     },
     {
       "method": "GET",
       "path": "/login",
-      "user_agent": "Go-http-client/1.1"
+      "user_agent": "Mozilla/5.0 (compatible; GenomeCrawlerd/1.0; +https://www.nokia.com/genomecrawler)"
     },
     {
       "method": "GET",
