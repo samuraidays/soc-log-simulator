@@ -20,6 +20,7 @@ class Corpus:
         self.suricata = self._load("suricata_events.json")
         self.tanner = self._load("tanner_events.json")
         self.timeline = self._load("timeline_profile.json")
+        self.malware_iocs = self._load("malware_iocs.json")["iocs"]
 
     def _load(self, name: str) -> dict:
         with open(self.dir / name, encoding="utf-8") as f:
@@ -35,6 +36,17 @@ class Corpus:
 
     def pick_benign_ip(self) -> dict:
         return random.choice(self.benign_ips)
+
+    # --- マルウェアIOC（GTI照会用の本物のデータ） ---
+    def pick_file_ioc(self) -> dict | None:
+        """ハッシュ(md5/sha256)を持つIOC。dionaea の検体DLイベント用。"""
+        pool = [i for i in self.malware_iocs if i.get("md5") or i.get("sha256")]
+        return random.choice(pool) if pool else None
+
+    def pick_url_ioc(self) -> dict | None:
+        """URL/domain を持つIOC。cowrie の wget コマンド用。"""
+        pool = [i for i in self.malware_iocs if i.get("url") or i.get("domain")]
+        return random.choice(pool) if pool else None
 
     def __repr__(self) -> str:
         return (

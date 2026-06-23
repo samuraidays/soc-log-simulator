@@ -58,6 +58,13 @@ LOCAL_NAMES = {
 }
 
 _CTRL = re.compile(r"[\x00-\x1f\x7f]")
+_URL_RE = re.compile(r"https?://[^\s'\"|;>)]+", re.IGNORECASE)
+
+
+def host_from_url(url: str) -> str:
+    if "://" not in url:
+        return ""
+    return url.split("://", 1)[1].split("/", 1)[0].split(":", 1)[0]
 
 
 def sanitize(s: str, max_len: int = 200) -> str:
@@ -110,6 +117,9 @@ def top_keys(counter: Counter, n: int) -> list:
 
 def build(args) -> dict:
     out = {}
+    # マルウェアIOC（全ソース横断で集約）。file_iocs=ハッシュ系 / url_iocs=ネットワーク系
+    file_iocs: dict = {}
+    url_iocs: dict = {}
 
     # --- cowrie ---
     rows = read_lines("cowrie", args, args.tail)
@@ -122,6 +132,10 @@ def build(args) -> dict:
                 pws[r["password"]] += 1
             if r.get("input"):
                 cmds[sanitize(r["input"])] += 1
+                # wget/curl 等のコマンドから本物のマルウェアURL/ドメインを抽出
+                for u in _URL_RE.findall(r["input"]):
+                    u = sanitize(u, 200)
+                    url_iocs[u] = {"url": u, "domain": host_from_url(u)}
             if r.get("src_ip"):
                 ips[r["src_ip"]] += 1
         existing = json.loads((CORPUS / "cowrie_events.json").read_text())
@@ -171,21 +185,23 @@ def build(args) -> dict:
     # --- dionaea ---
     rows = read_lines("dionaea", args, args.tail)
     if rows:
-        dls, ports = {}, Counter()
+        ports = Counter()
         for r in rows:
             dp = r.get("dst_port")
             if dp:
                 ports[dp] += 1
             dl = r.get("download") or {}
             md5 = dl.get("md5_hash") or r.get("download_md5")
-            if md5:
-                dls[md5] = {"md5": md5, "url": sanitize(dl.get("url", r.get("download_url", "")), 120),
-                            "filename": sanitize(dl.get("filename", ""), 60)}
+            sha = dl.get("sha256_hash") or dl.get("sha256")
+            url = sanitize(dl.get("url", r.get("download_url", "")), 200)
+            if md5 or sha:
+                key = sha or md5
+                file_iocs[key] = {"md5": md5 or "", "sha256": sha or "",
+                                  "url": url, "domain": host_from_url(url),
+                                  "filename": sanitize(dl.get("filename", ""), 60)}
         existing = json.loads((CORPUS / "dionaea_events.json").read_text())
         if ports:
             existing["dst_ports"] = [p for p, _ in ports.most_common(6)]
-        if dls:
-            existing["downloads"] = list(dls.values())[:10]
         out["dionaea_events.json"] = existing
 
     # --- enriched（あれば IP分類 + 実マルウェアハッシュ を更新） ---
@@ -194,7 +210,7 @@ def build(args) -> dict:
     # 実際に照会して反応する「使えるデータ」になる（ダミーではなく実観測値）。
     rows = read_lines("enriched", args, args.tail * 4)
     if rows:
-        mal_ips, ben_ips, hashes = {}, {}, {}
+        mal_ips, ben_ips = {}, {}
         for r in rows:
             ip = r.get("src_ip") or (r.get("peer", {}) or {}).get("ip")
             enr = r.get("enrichment", {}) or {}
@@ -211,13 +227,17 @@ def build(args) -> dict:
                     kind = "smb-scan" if src == "dionaea" else "ssh-bruteforce"
                     mal_ips[ip] = {"ip": ip, "country": country, "isp": isp, "kind": kind}
 
-            # VT確定済みの実マルウェアハッシュ（GTIが反応するもののみ採用）
-            md5 = r.get("download_md5") or (r.get("download", {}) or {}).get("md5_hash")
-            if md5 and enr.get("vt_malicious", 0):
-                hashes[md5] = {"md5": md5,
-                               "url": sanitize(r.get("download_url", (r.get("download", {}) or {}).get("url", "")), 120),
-                               "filename": sanitize((r.get("download", {}) or {}).get("filename", ""), 60),
-                               "vt_family": sanitize(enr.get("vt_family", ""), 60)}
+            # VT確定済みの実マルウェアハッシュ（GTIが反応するもののみ採用、sha256も取得）
+            dl = r.get("download", {}) or {}
+            md5 = r.get("download_md5") or dl.get("md5_hash")
+            sha = dl.get("sha256_hash") or dl.get("sha256") or r.get("download_sha256")
+            if (md5 or sha) and enr.get("vt_malicious", 0):
+                url = sanitize(r.get("download_url", dl.get("url", "")), 200)
+                key = sha or md5
+                file_iocs[key] = {"md5": md5 or "", "sha256": sha or "",
+                                  "url": url, "domain": host_from_url(url),
+                                  "filename": sanitize(dl.get("filename", ""), 60),
+                                  "vt_family": sanitize(enr.get("vt_family", ""), 60)}
 
         if mal_ips:
             out["malicious_ips.json"] = {"_comment": "build_corpus.py により再生成",
@@ -225,12 +245,16 @@ def build(args) -> dict:
         if ben_ips:
             out["benign_ips.json"] = {"_comment": "build_corpus.py により再生成（GreyNoise=benign）",
                                       "ips": list(ben_ips.values())[:30]}
-        if hashes:
-            # dionaea コーパスにVT既知の実ハッシュを反映（EICARテスト行は末尾に残す）
-            dod = out.get("dionaea_events.json") or json.loads((CORPUS / "dionaea_events.json").read_text())
-            eicar = [d for d in dod.get("downloads", []) if d.get("vt_family") == "EICAR-Test-File"]
-            dod["downloads"] = list(hashes.values())[:15] + eicar
-            out["dionaea_events.json"] = dod
+
+    # --- malware_iocs.json を集約（EICARテスト行は残す） ---
+    if file_iocs or url_iocs:
+        existing = json.loads((CORPUS / "malware_iocs.json").read_text())
+        eicar = [i for i in existing.get("iocs", []) if i.get("vt_family") == "EICAR-Test-File"]
+        merged = list(file_iocs.values())[:30] + list(url_iocs.values())[:30] + eicar
+        out["malware_iocs.json"] = {
+            "_comment": "build_corpus.py により再生成（実観測のマルウェアIOC）",
+            "iocs": merged,
+        }
 
     out.pop("_cowrie_ips", None)
     return out
@@ -258,8 +282,12 @@ def main() -> int:
     out_dir = Path(args.out)
     for name, data in updates.items():
         if args.dry_run:
-            n = len(data.get("ips", data.get("commands", data.get("malicious_signatures", [])))) \
-                if isinstance(data, dict) else 0
+            n = 0
+            if isinstance(data, dict):
+                for k in ("ips", "iocs", "commands", "malicious_signatures", "malicious_paths"):
+                    if isinstance(data.get(k), list):
+                        n = len(data[k])
+                        break
             print(f"[dry] {name}: ~{n} 件")
             continue
         (out_dir / name).write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")

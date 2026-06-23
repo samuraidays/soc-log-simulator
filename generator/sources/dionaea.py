@@ -20,11 +20,27 @@ def generate(corpus, ip_rec: dict, dst_ip: str) -> tuple[str, dict]:
         "sensor": d.get("sensor", "tpot-sensor-01"),
         "timestamp": schema.iso_utc(epoch),
     }
-    # 一部はマルウェア検体ダウンロードに発展
-    if random.random() < 0.15:
-        dl = random.choice(d["downloads"])
+    # 一部はマルウェア検体ダウンロードに発展（本物のハッシュ/URL/ドメインを出力）
+    ioc = corpus.pick_file_ioc() if random.random() < 0.15 else None
+    if ioc:
         ev["eventid"] = "dionaea.download.complete"
-        ev["download"] = {"md5_hash": dl["md5"], "url": dl["url"], "filename": dl["filename"]}
+        dl = {"md5_hash": ioc.get("md5", ""),
+              "sha256_hash": ioc.get("sha256", ""),
+              "url": ioc.get("url", ""),
+              "filename": ioc.get("filename", "")}
+        # URL からドメイン(host)を補完
+        host = ioc.get("domain") or _host_from_url(ioc.get("url", ""))
+        if host:
+            dl["host"] = host
+        ev["download"] = {k: v for k, v in dl.items() if v}
     else:
         ev["eventid"] = "dionaea.connection"
     return schema.SOURCETYPE_MAP["dionaea"], ev
+
+
+def _host_from_url(url: str) -> str:
+    """http://host/path → host（ポート除去）。"""
+    if "://" not in url:
+        return ""
+    rest = url.split("://", 1)[1]
+    return rest.split("/", 1)[0].split(":", 1)[0]

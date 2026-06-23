@@ -199,8 +199,18 @@ python3 tools/build_corpus.py --src-dir /path/to/logs
 ## 出力フォーマット（生ログ＝エンリッチ前）
 - **cowrie**: `eventid`(login.failed/success, command.input, session.connect), `src_ip`,`username`,`password`,`input`,`session`
 - **suricata**: EVE `event_type:alert`, `src_ip`/`dest_ip`, `alert.signature/category/severity`
-- **dionaea**: `connection.protocol`, `dst_port`(445等), `download.md5_hash`/`url`
+- **dionaea**: `connection.protocol`, `dst_port`(445等), `download.md5_hash`/`sha256_hash`/`url`/`host`
 - **tanner**: `peer.ip`, `path`(.env/.aws等), `method`, `headers.user-agent`
+- **cowrie**(一部): `input` に本物のマルウェアURLを使った `wget` コマンド（URL/ドメインIOC）
+
+### 本物のマルウェアIOC（sha256 / ドメイン / URL）を入れる
+GTI(VirusTotal)が照会して悪性判定する**実IOC**を `corpus/malware_iocs.json` に置く。
+dionaea(検体DL)と cowrie(wget) がここから引いて出力する。day-one は EICAR(実ハッシュ/全AV必中)入り。
+本物のデータの入れ方は2通り:
+1. **自分のT-POTから**: `python3 tools/build_corpus.py --ssh-host tpot`
+   → `honeypot_enriched.json` のVT確定検体(md5/sha256/url/family)と、cowrieの `wget` URL/ドメインを自動取込。
+2. **信頼できる公開フィードから**: abuse.ch **MalwareBazaar**(sha256+family) / **URLhaus**(URL+domain) や
+   自社GTIの検索結果を `corpus/malware_iocs.json` の `iocs` に貼る。**ダミーは入れない**（GTIで該当なしになる）。
 
 `abuse_score` や `gn_classification` 等のエンリッチ値は**あえて含めない**（CTI 製品が付与する部分）。
 
