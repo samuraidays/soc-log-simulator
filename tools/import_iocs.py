@@ -155,8 +155,11 @@ def merge_into_corpus(new_iocs: list[dict], limit: int, dry: bool) -> int:
     existing = doc.get("iocs", [])
     orig_count = len(existing)
     seen = {ioc_key(i) for i in existing if ioc_key(i)}
+    # ハッシュ型(sha256/md5)を優先。ドメイン/URL型はThreatFoxで件数が多く、
+    # 優先しないと limit 内をドメイン/URL型だけで食い尽くしハッシュ型が0件になりうる。
+    ordered = sorted(new_iocs, key=lambda i: 0 if (i.get("sha256") or i.get("md5")) else 1)
     added = 0
-    for i in new_iocs:
+    for i in ordered:
         k = ioc_key(i)
         if not k or k in seen:
             continue
@@ -166,7 +169,7 @@ def merge_into_corpus(new_iocs: list[dict], limit: int, dry: bool) -> int:
         if added >= limit:
             break
     if dry:
-        for i in new_iocs[:limit]:
+        for i in ordered[:limit]:
             print("  ", {k: v for k, v in i.items() if v})
         print(f"[dry] 追加候補 {min(added, limit)} 件（既存 {orig_count} 件にマージ）")
         return added
