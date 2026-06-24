@@ -137,7 +137,10 @@ def fetch(args, key: str | None) -> list[dict]:
         else:
             sys.stderr.write(f"[warn] ThreatFox: {r.get('query_status')}\n")
     if args.source in ("malwarebazaar", "both"):
-        r = _post(MALWAREBAZAAR_API, {"query": "get_recent", "selector": "time"}, key, form=True)
+        # selector="time" は直近60分以内の検体のみで、アップロードが無い瞬間は
+        # no_results になりがち。selector="100" なら直近100件を時間に関わらず取得でき、
+        # 全件が sha256(多くは md5 も)付きなので安定してハッシュIOCが手に入る。
+        r = _post(MALWAREBAZAAR_API, {"query": "get_recent", "selector": "100"}, key, form=True)
         if r.get("query_status") == "ok":
             iocs += parse_malwarebazaar(_rows(r))
         else:
